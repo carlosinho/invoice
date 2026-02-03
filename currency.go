@@ -3,6 +3,7 @@ package main
 var currencySymbols = map[string]string{
 	"USD": "$",
 	"EUR": "€",
+	"PLN": "zł",
 	"GBP": "£",
 	"JPY": "¥",
 	"CNY": "¥",
@@ -11,4 +12,5 @@ var currencySymbols = map[string]string{
 	"KRW": "₩",
 	"BRL": "R$",
 	"SGD": "SGD$",
+	"ZAR": "R",
 }

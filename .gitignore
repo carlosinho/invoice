@@ -4,3 +4,9 @@
 *.yml
 *.sh
 !.github/workflows/*.yml
+
+# exclude generated binary from repo
+invoice
+
+# other
+.DS_Store

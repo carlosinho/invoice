@@ -27,7 +27,10 @@ type Invoice struct {
 	From string `json:"from" yaml:"from"`
 	To   string `json:"to" yaml:"to"`
 	Date string `json:"date" yaml:"date"`
-	Due  string `json:"due" yaml:"due"`
+	SaleDate string `json:"saleDate" yaml:"saleDate"`
+	// BillingPeriod is optional and only printed if set.
+	BillingPeriod string `json:"billingPeriod" yaml:"billingPeriod"`
+	Due           string `json:"due" yaml:"due"`
 
 	Items      []string  `json:"items" yaml:"items"`
 	Quantities []int     `json:"quantities" yaml:"quantities"`
@@ -36,6 +39,11 @@ type Invoice struct {
 	Tax      float64 `json:"tax" yaml:"tax"`
 	Discount float64 `json:"discount" yaml:"discount"`
 	Currency string  `json:"currency" yaml:"currency"`
+
+	PaymentMethod string `json:"paymentMethod" yaml:"paymentMethod"`
+	Bank          string `json:"bank" yaml:"bank"`
+	Swift         string `json:"swift" yaml:"swift"`
+	AccountNo     string `json:"accountNo" yaml:"accountNo"`
 
 	Note string `json:"note" yaml:"note"`
 }
@@ -79,11 +87,18 @@ func init() {
 	generateCmd.Flags().StringVarP(&file.From, "from", "f", defaultInvoice.From, "Issuing company")
 	generateCmd.Flags().StringVarP(&file.To, "to", "t", defaultInvoice.To, "Recipient company")
 	generateCmd.Flags().StringVar(&file.Date, "date", defaultInvoice.Date, "Date")
+	generateCmd.Flags().StringVar(&file.SaleDate, "saleDate", "", "Sale date (optional)")
+	generateCmd.Flags().StringVar(&file.BillingPeriod, "billingPeriod", "", "Billing period (optional)")
 	generateCmd.Flags().StringVar(&file.Due, "due", defaultInvoice.Due, "Payment due date")
 
 	generateCmd.Flags().Float64Var(&file.Tax, "tax", defaultInvoice.Tax, "Tax")
 	generateCmd.Flags().Float64VarP(&file.Discount, "discount", "d", defaultInvoice.Discount, "Discount")
 	generateCmd.Flags().StringVarP(&file.Currency, "currency", "c", defaultInvoice.Currency, "Currency")
+
+	generateCmd.Flags().StringVar(&file.PaymentMethod, "paymentMethod", "", "Payment method (optional)")
+	generateCmd.Flags().StringVar(&file.Bank, "bank", "", "Bank (optional)")
+	generateCmd.Flags().StringVar(&file.Swift, "swift", "", "SWIFT (optional)")
+	generateCmd.Flags().StringVar(&file.AccountNo, "accountNo", "", "Account number (optional)")
 
 	generateCmd.Flags().StringVarP(&file.Note, "note", "n", "", "Note")
 	generateCmd.Flags().StringVarP(&output, "output", "o", "invoice.pdf", "Output file (.pdf)")
@@ -127,7 +142,7 @@ var generateCmd = &cobra.Command{
 		}
 
 		writeLogo(&pdf, file.Logo, file.From)
-		writeTitle(&pdf, file.Title, file.Id, file.Date)
+		writeTitle(&pdf, file.Title, file.Id, file.Date, file.Due, file.BillingPeriod, file.SaleDate)
 		writeBillTo(&pdf, file.To)
 		writeHeaderRow(&pdf)
 		subtotal := 0.0
@@ -145,13 +160,10 @@ var generateCmd = &cobra.Command{
 			writeRow(&pdf, file.Items[i], q, r)
 			subtotal += float64(q) * r
 		}
-		if file.Note != "" {
-			writeNotes(&pdf, file.Note)
+		if file.Note != "" || file.PaymentMethod != "" || file.Bank != "" || file.Swift != "" || file.AccountNo != "" {
+			writeNotes(&pdf, file.Note, file.PaymentMethod, file.Bank, file.Swift, file.AccountNo)
 		}
 		writeTotals(&pdf, subtotal, subtotal*file.Tax, subtotal*file.Discount)
-		if file.Due != "" {
-			writeDueDate(&pdf, file.Due)
-		}
 		writeFooter(&pdf, file.Id)
 		output = strings.TrimSuffix(output, ".pdf") + ".pdf"
 		err = pdf.WritePdf(output)

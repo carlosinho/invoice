@@ -53,7 +53,7 @@ func writeLogo(pdf *gopdf.GoPdf, logo string, from string) {
 	pdf.Br(36)
 }
 
-func writeTitle(pdf *gopdf.GoPdf, title, id, date string) {
+func writeTitle(pdf *gopdf.GoPdf, title, id, date, due, billingPeriod, saleDate string) {
 	_ = pdf.SetFont("Inter-Bold", "", 24)
 	pdf.SetTextColor(0, 0, 0)
 	_ = pdf.Cell(nil, title)
@@ -66,7 +66,35 @@ func writeTitle(pdf *gopdf.GoPdf, title, id, date string) {
 	_ = pdf.Cell(nil, "  ·  ")
 	pdf.SetTextColor(100, 100, 100)
 	_ = pdf.Cell(nil, date)
-	pdf.Br(48)
+
+	// Optional due date + billing period (rendered on the same line as issue date).
+	if due != "" {
+		pdf.SetTextColor(150, 150, 150)
+		_ = pdf.Cell(nil, "  ·  ")
+		pdf.SetTextColor(100, 100, 100)
+		_ = pdf.Cell(nil, "Due: ")
+		_ = pdf.Cell(nil, due)
+	}
+	if billingPeriod != "" {
+		pdf.SetTextColor(150, 150, 150)
+		_ = pdf.Cell(nil, "  ·  ")
+		pdf.SetTextColor(100, 100, 100)
+		_ = pdf.Cell(nil, "Billing period: ")
+		_ = pdf.Cell(nil, billingPeriod)
+	}
+
+	// Optional sale date (printed below issue date line).
+	if saleDate != "" {
+		pdf.Br(18)
+		_ = pdf.SetFont("Inter", "", 10)
+		pdf.SetTextColor(100, 100, 100)
+		_ = pdf.Cell(nil, "Sale date: ")
+		pdf.SetTextColor(0, 0, 0)
+		_ = pdf.Cell(nil, saleDate)
+		pdf.Br(33)
+	} else {
+		pdf.Br(48)
+	}
 }
 
 func writeDueDate(pdf *gopdf.GoPdf, due string) {
@@ -118,7 +146,7 @@ func writeHeaderRow(pdf *gopdf.GoPdf) {
 	pdf.Br(24)
 }
 
-func writeNotes(pdf *gopdf.GoPdf, notes string) {
+func writeNotes(pdf *gopdf.GoPdf, notes, paymentMethod, bank, swift, accountNo string) {
 	pdf.SetY(600)
 
 	_ = pdf.SetFont("Inter", "", 9)
@@ -127,6 +155,26 @@ func writeNotes(pdf *gopdf.GoPdf, notes string) {
 	pdf.Br(18)
 	_ = pdf.SetFont("Inter", "", 9)
 	pdf.SetTextColor(0, 0, 0)
+
+	if paymentMethod != "" {
+		_ = pdf.Cell(nil, "Payment: "+paymentMethod)
+		pdf.Br(15)
+	}
+	if bank != "" {
+		_ = pdf.Cell(nil, "Bank: "+bank)
+		pdf.Br(15)
+	}
+	if swift != "" {
+		_ = pdf.Cell(nil, "SWIFT: "+swift)
+		pdf.Br(15)
+	}
+	if accountNo != "" {
+		_ = pdf.Cell(nil, "Account no: "+accountNo)
+		pdf.Br(15)
+	}
+	if (paymentMethod != "" || bank != "" || swift != "" || accountNo != "") && notes != "" {
+		pdf.Br(15)
+	}
 
 	formattedNotes := strings.ReplaceAll(notes, `\n`, "\n")
 	notesLines := strings.Split(formattedNotes, "\n")
