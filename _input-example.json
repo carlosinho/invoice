@@ -1,0 +1,34 @@
+{
+    "lang": "en",
+    "id": "1/02/2026",
+    "logo": "template/coffee.png",
+    "logoScale": 80,
+  
+    "from": "Bean There, Done That \n42 Roast Street, Brewtown \nUS of Coffee \nTAXID: 0000",
+    "to": "Ctrl Alt Deli \n101 Byte Avenue, Silicon Square \nDeliville \nTAXID: 0001",
+  
+    "items": [
+      "Coffee operations service",
+      "Special edition tamper"
+    ],
+    "quantities": [
+        2, 
+        1
+    ],
+    "rates": [
+        99, 
+        149
+    ],
+    "paid": 50.0,
+  
+    "tax": 0.1,
+    "discount": 0.15,
+    "currency": "USD",
+  
+    "paymentMethod": "Bank transfer",
+    "bank": "Global bank",
+    "swift": "XXXXXXXXX",
+    "accountNo": "0000 0000 0001",
+
+    "note": "Thanks for your business!"
+}

@@ -1,12 +1,19 @@
+# original
 *.pdf
-*.json
 *.yaml
 *.yml
 *.sh
 !.github/workflows/*.yml
 
-# exclude generated binary from repo
+# output dir for invoices
+output
+
+# invoice binary
 invoice
 
 # other
 .DS_Store
+
+# other
+_input.json
+template/decaf.png
