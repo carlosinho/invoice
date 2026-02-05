@@ -9,7 +9,13 @@ Generate invoices from the command line. 💵
 
 > **Note:** This is a fork of [maaslalani/invoice](https://github.com/maaslalani/invoice/) with additional features and modifications. I wanted to solve some of the issues of the original project that seems abandoned and also add more functionality that I needed personally.
 
-## Command Line Interface
+## Example invoice
+
+Shows all available details:
+
+![Invoice example](inv-example.png)
+
+## Use via command line interface
 
 ```bash
 invoice generate --from "Dream, Inc." --to "Imagine, Inc." \
@@ -21,11 +27,9 @@ invoice generate --from "Dream, Inc." --to "Imagine, Inc." \
 
 The generated PDF is saved in the `output/` directory. The filename is based on the invoice ID plus the language code (e.g. `20260202-001-en.pdf`), normalized to a safe lowercase filename.
 
-![Invoice example](inv-example.png)
+## Use via configuration file
 
-### Configuration File
-
-Or, save repeated information with JSON / YAML:
+Save repeated information with JSON / YAML:
 
 ```json
 {
@@ -76,7 +80,7 @@ Or, save repeated information with JSON / YAML:
 - Note ** If not provided, it will be set to 7 days by default.
 - Note *** Billing period is optional (e.g. `"January 2026"` or `"Q1 2026"`). When set, it is shown on the invoice below the due date.
 
-### Localization
+## Localization
 
 To change the language of fixed labels on the invoice (title, column headers, notes labels, totals labels, etc.):
 
